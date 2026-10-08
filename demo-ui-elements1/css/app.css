@@ -42,6 +42,23 @@ a { color: inherit; }
     #05060a;
 }
 
+.purpose {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 5;
+  max-width: 280px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid #2a3140;
+  border-radius: 12px;
+  background: rgba(18, 21, 28, 0.94);
+  color: #f4f6fb;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
 .brand {
   margin: 0;
   font-family: var(--display);
@@ -561,6 +578,7 @@ a.panel { display: block; text-decoration: none; }
   .phone { height: min(844px, calc(100dvh - 24px)); }
 }
 @media (max-width: 460px) {
+  .purpose { display: none; }
   .stage { padding: 0; background: var(--ink); }
   .brand { display: none; }
   .phone {
