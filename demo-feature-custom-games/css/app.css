@@ -463,3 +463,272 @@ h1 {
   .phone { width: 100vw; height: 100dvh; padding: 0; border-radius: 0; box-shadow: none; background: var(--ink); }
   .screen { border-radius: 0; }
 }
+
+.band.kid {
+  background: linear-gradient(180deg, #c5ebff 0%, #e7f6ff 100%);
+  color: #16324a;
+}
+.band.kid .clock,
+.band.kid h1,
+.band.kid .sub { color: #16324a; }
+.band.kid .kicker { color: #e25e00; }
+.band.kid .holes button {
+  background: white;
+  color: #16324a;
+  border-color: transparent;
+}
+.band.kid .holes button.on { background: #1e6cff; color: white; }
+.band.kid .holes button.done { color: #e25e00; border-color: rgba(226, 94, 0, 0.35); background: white; }
+.scroll.kid {
+  background: #e7f6ff;
+  color: #16324a;
+}
+.scroll.kid .tiny,
+.scroll.kid .label,
+.scroll.kid .call { color: #3d5c73; }
+.scroll.kid .player { border-color: rgba(22, 50, 74, 0.12); }
+.scroll.kid .lead span { background: white; border-color: transparent; color: #16324a; }
+.mapwrap {
+  position: relative;
+  margin-top: 8px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 0 #b7dff3;
+}
+.holemap { display: block; width: 100%; height: 280px; background: #8fd0f5; }
+.placescreen {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 52px 14px 18px;
+  background: #e7f6ff;
+  color: #16324a;
+}
+.placetop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.placetop p { margin: 0; font-weight: 800; }
+.placescreen .mapwrap {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+}
+.placescreen .holemap { height: 100%; }
+.ghostplay .placescreen { background: #101428; color: #f7f8ff; }
+.ghostplay .placescreen .placetop .btn { flex: 0 0 auto; min-height: 40px; }
+.ghostbox {
+  background: white;
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-top: 8px;
+  box-shadow: 0 6px 0 #f0c14a;
+  color: #16324a;
+}
+.ghostbox .need {
+  margin: 4px 0;
+  font-family: var(--display);
+  font-size: 42px;
+  line-height: 1;
+  color: #e25e00;
+}
+.shotbtn { background: #ff7a14; color: #1a0d04; }
+.shotlog {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.shotlog li {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(22, 50, 74, 0.12);
+  color: #16324a;
+}
+.textbtn {
+  margin-top: 6px;
+  border: 0;
+  background: transparent;
+  color: #1e6cff;
+  font-weight: 700;
+  padding: 0;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--raised);
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.chip.on { background: #ff7a14; border-color: #ff7a14; color: #1a0d04; }
+.sheet-card.kidcard { background: #f4fbff; color: #16324a; }
+.sheet-card.kidcard h2,
+.sheet-card.kidcard .label { color: #16324a; }
+.mode.ghostpick.on { box-shadow: inset 3px 0 0 #e25e00; background: rgba(255, 122, 20, 0.1); }
+
+.ghostplay {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(280px 180px at 50% 0%, rgba(94, 234, 212, 0.16), transparent 70%),
+    #101428;
+  color: #f7f8ff;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+}
+.ghostplay .band {
+  background: transparent;
+  color: #f7f8ff;
+}
+.ghostplay .clock,
+.ghostplay h1,
+.ghostplay h2,
+.ghostplay .sub { color: #f7f8ff; font-family: "Nunito", "Segoe UI", sans-serif; }
+.ghostplay h1 { font-weight: 800; letter-spacing: -0.03em; }
+.ghostplay .kicker { color: #c4b5fd; font-family: "Nunito", "Segoe UI", sans-serif; }
+.ghostplay .holes button {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #b7c0e0;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+}
+.ghostplay .holes button.on { background: #5eead4; color: #06241f; }
+.ghostplay .holes button.done { background: rgba(196, 181, 253, 0.22); color: #c4b5fd; }
+.ghostplay .scroll { background: transparent; color: #f7f8ff; }
+.ghostplay .tiny,
+.ghostplay .label,
+.ghostplay .call { color: #b7c0e0; font-family: "Nunito", "Segoe UI", sans-serif; }
+.ghostplay .label { letter-spacing: 0.12em; }
+.ghostplay .lead span {
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  border-radius: 999px;
+  color: #f7f8ff;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+}
+.ghostplay .titleline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ghostplay .titleline h1 { margin: 0; }
+.ghostplay .racerow {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+.ghostplay .race {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #c4b5fd;
+}
+.ghostplay .race.you { color: #5eead4; }
+.ghostplay .race b {
+  color: #f7f8ff;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+.ghostplay .raceicon { width: 32px; height: 32px; display: block; }
+.ghostplay .ghostbox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(196, 181, 253, 0.4);
+  box-shadow: none;
+  border-radius: 22px;
+  color: #f7f8ff;
+}
+.ghostplay .ghostbox .need {
+  color: #ffe08a;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+}
+.ghostplay .mapwrap {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+.ghostplay .mapwrap.placing { outline: 3px solid #5eead4; }
+.ghostplay .maptip {
+  background: #5eead4;
+  color: #06241f;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  border-radius: 999px;
+}
+.ghostplay .shotlog li { color: #f7f8ff; border-bottom-color: rgba(255, 255, 255, 0.1); }
+.ghostplay .textbtn { color: #5eead4; font-family: "Nunito", "Segoe UI", sans-serif; }
+.ghostplay .stepper button {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f7f8ff;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+}
+.ghostplay .num,
+.ghostplay .num.blue {
+  color: #5eead4;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+}
+.ghostplay .btn {
+  border-radius: 999px;
+  background: #5eead4;
+  color: #06241f;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+  border: 0;
+}
+.ghostplay .btn.ghost {
+  background: transparent;
+  color: #f7f8ff;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+}
+.ghostplay .btn.shotbtn { background: #ffe08a; color: #2a2208; }
+.ghostplay .home-ind { background: rgba(247, 248, 255, 0.45); }
+.ghostplay .toast {
+  background: #5eead4;
+  color: #06241f;
+  border-radius: 999px;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+}
+.ghostplay .chip {
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f7f8ff;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+  font-weight: 800;
+}
+.ghostplay .chip.on { background: #5eead4; color: #06241f; }
+.ghostplay .sheet-card,
+.ghostplay .sheet-card.kidcard,
+.ghostplay .sheet-card.ghostface {
+  background: #171b38;
+  color: #f7f8ff;
+  border-radius: 24px 24px 0 0;
+  font-family: "Nunito", "Segoe UI", sans-serif;
+}
+.ghostplay .sheet-card h2,
+.ghostplay .sheet-card .label,
+.ghostplay .sheet-card .kicker { color: #f7f8ff; }
+.ghostplay .sheet-card .kicker { color: #c4b5fd; }
+.ghostplay .grab { background: rgba(255, 255, 255, 0.25); }
+.ghostplay .rule { color: #f7f8ff; border-bottom-color: rgba(255, 255, 255, 0.1); font-family: "Nunito", "Segoe UI", sans-serif; }
+.ghostplay .rule.on { color: #5eead4; }
