@@ -13,6 +13,7 @@
         rules: ["fairway", "hazard", "ball", "twoPutt"],
         friends: [],
         ghost: false,
+        challenge: "bingo",
       },
       customPoints: [],
       focus: CG.player,
@@ -97,6 +98,23 @@
 
   function createRound() {
     const setup = state.setup;
+    if (setup.mode === "challenge") {
+      const friends = setup.friends.slice();
+      state.round = {
+        id: "live",
+        mode: "challenge",
+        challenge: "bingo",
+        gameName: "Bingo Bango Bongo",
+        rules: [],
+        ghostScores: null,
+        pointDefs: [],
+        friends: friends,
+        hole: 0,
+        holes: CG.holes.map(() => ({ awards: { green: null, putts: null, furthest: null }, scores: {}, putts: {}, marks: {}, shots: {} })),
+      };
+      save();
+      return;
+    }
     const custom = setup.mode === "custom";
     const ghost = !custom && !!setup.ghost;
     const rules = custom ? setup.rules.slice() : [];
@@ -261,14 +279,17 @@
   function shell(band, body, dock, kind) {
     const kid = kind === "kid";
     const ghost = kind === "ghost";
-    const html = '<div class="island"></div><header class="band' + (kid ? " kid" : "") + (ghost ? " ghost" : "") + '"><div class="clock">' + esc(clock()) + "</div>" + band + "</header>" +
-      '<div class="scroll' + (kid ? " kid" : "") + (ghost ? " ghost" : "") + '">' + body + "</div>" +
+    const bingo = kind === "bingo";
+    const html = '<div class="island"></div><header class="band' + (kid ? " kid" : "") + (ghost ? " ghost" : "") + (bingo ? " bingo" : "") + '"><div class="clock">' + esc(clock()) + "</div>" + band + "</header>" +
+      '<div class="scroll' + (kid ? " kid" : "") + (ghost ? " ghost" : "") + (bingo ? " bingo" : "") + '">' + body + "</div>" +
       (dock || "") +
       placeOverlay() +
       '<div class="home-ind"></div>' +
       sheetHtml() +
       (ui.toast ? '<div class="toast">' + esc(ui.toast) + "</div>" : "");
-    return ghost ? '<div class="ghostplay">' + html + "</div>" : html;
+    if (ghost) return '<div class="ghostplay">' + html + "</div>";
+    if (bingo) return '<div class="bingoplay">' + html + "</div>";
+    return html;
   }
 
   function placeOverlay() {
@@ -299,7 +320,9 @@
       const holeState = round.holes[index];
       const done = round.mode === "custom"
         ? playersOf(round).some((name) => pointsFor(round, name, holeState) > 0)
-        : holeState.scores[CG.player] != null;
+        : round.mode === "challenge"
+          ? !!(holeState.awards && holeState.awards.green && holeState.awards.putts && holeState.awards.furthest)
+          : holeState.scores[CG.player] != null;
       return '<button type="button" data-act="jump" data-hole="' + index + '" class="' + (current ? "on" : done ? "done" : "") + '">' + hole.n + "</button>";
     }).join("");
   }
@@ -322,11 +345,15 @@
     const officialOpen = ui.choice === "official";
     const band = '<p class="kicker">Start round</p><h1>How do you score?</h1>';
     const modes = '<button type="button" class="mode official' + (officialOpen ? " on" : "") + '" data-act="mode" data-mode="official"><b>Official golf rules</b><span>Strokes, a hole map, and the rules helper.</span></button>' +
-      '<button type="button" class="mode custom' + (ui.choice === "custom" ? " on" : "") + '" data-act="mode" data-mode="custom"><b>Custom game</b><span>Points replace the score. Check what earns a point, then play it with friends.</span></button>';
+      '<button type="button" class="mode custom' + (ui.choice === "custom" ? " on" : "") + '" data-act="mode" data-mode="custom"><b>Custom game</b><span>Points replace the score. Check what earns a point, then play it with friends.</span></button>' +
+      '<button type="button" class="mode challenge' + (ui.choice === "challenge" ? " on" : "") + '" data-act="mode" data-mode="challenge"><b>Challenge games</b><span>Pick a points game. Three points a hole, no scorecard.</span></button>';
     const officialNext = officialOpen
       ? '<p class="label mt">How do you want to play?</p>' +
         '<button type="button" class="mode' + (setup.ghost ? "" : " on official") + '" data-act="ghost-pick" data-ghost="0"><b>Just play</b><span>A normal card. Add each shot on the map, or enter the score.</span></button>' +
         '<button type="button" class="mode ghostpick' + (setup.ghost ? " on" : "") + '" data-act="ghost-pick" data-ghost="1"><b>Play the ghost</b><span>Solo. Race your best card and see what you need on every hole.</span></button>'
+      : "";
+    const challengePick = ui.choice === "challenge"
+      ? '<p class="label mt">Pick a game</p><button type="button" class="mode on challenge" data-act="pick-challenge" data-game="bingo"><b>Bingo Bango Bongo</b><span>First on the green, fewest putts, and the longest putt. One point each.</span></button><p class="tiny mt">Needs you and at least one friend.</p>'
       : "";
     const custom = ui.choice === "custom"
       ? '<label class="field"><span>Game name</span><input name="gameName" maxlength="40" value="' + esc(setup.gameName) + '"></label>' +
@@ -338,13 +365,13 @@
           return '<div class="checkline"><button type="button" class="check' + (on ? " on" : "") + '" data-act="rule" data-id="' + point.id + '"><i></i><span><b>' + esc(point.title) + "</b><span>" + esc(point.detail) + "</span></span></button>" + remove + "</div>";
         }).join("") + "</div>" +
         '<form class="add-rule" data-act="add-rule"><label class="field"><span>Your rule</span><input name="title" maxlength="40" placeholder="Closest to the pin" required></label><label class="field"><span>When it scores</span><input name="detail" maxlength="140" placeholder="One point if you are closest."></label><button class="btn ghost" type="submit">Add rule</button></form>'
-      : officialNext;
-    const friends = officialOpen && setup.ghost
-      ? '<p class="tiny mt">Ghost rounds are just you. Friends wait for the next game.</p>'
-      : (ui.choice ? '<p class="label mt">Friends on this card</p><div class="friends">' + CG.friends.map((name) => {
+      : officialNext + challengePick;
+    const friends = (officialOpen && setup.ghost) || !ui.choice
+      ? (officialOpen && setup.ghost ? '<p class="tiny mt">Ghost rounds are just you. Friends wait for the next game.</p>' : "")
+      : '<p class="label mt">' + (ui.choice === "challenge" ? "Who is playing" : "Friends on this card") + '</p><div class="friends">' + CG.friends.map((name) => {
       const on = setup.friends.indexOf(name) !== -1;
       return '<button type="button" class="friend' + (on ? " on" : "") + '" data-act="friend" data-name="' + esc(name) + '">' + esc(name) + "</button>";
-    }).join("") + "</div>" : "");
+    }).join("") + "</div>";
     const dock = '<div class="dock"><a class="btn ghost slim" href="#/">Back</a><button class="btn" type="button" data-act="start">Tee off</button></div>';
     return shell(band, modes + custom + friends, dock);
   }
@@ -354,19 +381,48 @@
     if (!round) return viewLobby();
     const info = CG.holes[round.hole];
     const hole = round.holes[round.hole];
-    const kind = round.mode === "custom" ? "" : (round.ghostScores ? "ghost" : "kid");
-    const band = (round.ghostScores
+    const kind = round.mode === "challenge" ? "bingo" : round.mode === "custom" ? "" : (round.ghostScores ? "ghost" : "kid");
+    const band = round.mode === "challenge"
+      ? '<p class="kicker">Bingo Bango Bongo</p><h1>Hole ' + info.n + '</h1><p class="sub">Three points. No scorecard.</p><div class="holes">' + holeTicks(round) + "</div>"
+      : (round.ghostScores
       ? '<p class="kicker">Race your ghost</p><div class="titleline"><h1>Hole ' + info.n + "</h1>" + raceRow(round) + '</div><p class="sub">Par ' + info.par + " · " + info.yds + " yards</p>"
       : '<p class="kicker">' + esc(round.gameName) + " · Hole " + info.n + " of 9</p><h1>Par " + info.par + '</h1><p class="sub">' + info.yds + " yards</p>") +
       '<div class="holes">' + holeTicks(round) + "</div>";
-    const leaders = round.ghostScores ? "" : '<div class="lead">' + playersOf(round).map((name) => {
+    const leaders = round.ghostScores || round.mode === "challenge" ? "" : '<div class="lead">' + playersOf(round).map((name) => {
       const value = round.mode === "custom" ? totalPoints(round, name) : totalStrokes(round, name);
       const shown = round.mode === "custom" ? value + " pts" : (value.played ? value.total : "–");
       return "<span>" + esc(name.split(" ")[0]) + "<b>" + shown + "</b></span>";
     }).join("") + "</div>";
-    const body = leaders + (round.mode === "custom" ? '<p class="call">' + esc(info.call) + "</p>" + customHole(round, hole, info) : officialHole(round, hole, info));
-    const dock = '<div class="dock' + (kind === "ghost" ? " ghost" : "") + '"><button class="btn ghost slim" type="button" data-act="move" data-dir="-1"' + (round.hole === 0 ? " disabled" : "") + '>Prev</button><button class="btn" type="button" data-act="move" data-dir="1">' + (round.hole === 8 ? "Finish" : "Next") + "</button></div>";
+    const body = round.mode === "challenge"
+      ? bingoHole(round)
+      : leaders + (round.mode === "custom" ? '<p class="call">' + esc(info.call) + "</p>" + customHole(round, hole, info) : officialHole(round, hole, info));
+    const dock = '<div class="dock' + (kind === "ghost" ? " ghost" : "") + (kind === "bingo" ? " bingo" : "") + '"><button class="btn ghost slim" type="button" data-act="move" data-dir="-1"' + (round.hole === 0 ? " disabled" : "") + '>Prev</button><button class="btn" type="button" data-act="move" data-dir="1">' + (round.hole === 8 ? "Finish" : "Next") + "</button></div>";
     return shell(band, body, dock, kind);
+  }
+
+  function bingoPoints(round, name) {
+    return round.holes.reduce((sum, hole) => {
+      const awards = hole.awards || {};
+      return sum + ["green", "putts", "furthest"].filter((key) => awards[key] === name).length;
+    }, 0);
+  }
+
+  function bingoHole(round) {
+    const people = playersOf(round);
+    const awards = round.holes[round.hole].awards || { green: null, putts: null, furthest: null };
+    const board = '<div class="bb-board">' + people.map((name) => '<span><b>' + bingoPoints(round, name) + '</b>' + esc(name.split(" ")[0]) + "</span>").join("") + "</div>";
+    const cards = [
+      ["green", "Bingo", "First on the green"],
+      ["putts", "Bango", "Fewest putts"],
+      ["furthest", "Bongo", "Longest putt"],
+    ].map((item) => {
+      const winner = awards[item[0]];
+      const just = ui.pop && ui.pop.key === item[0] && ui.pop.hole === round.hole;
+      const choices = people.map((name) => '<button type="button" class="bb-player' + (winner === name ? " on" : "") + '" data-act="award" data-key="' + item[0] + '" data-name="' + esc(name) + '">' + esc(name.split(" ")[0]) + "</button>").join("");
+      const burst = just ? '<div class="bb-burst" aria-hidden="true"><span>+1</span><i></i><i></i><i></i><i></i><i></i></div>' : "";
+      return '<section class="bb-card ' + item[0] + (winner ? " won" : "") + (just ? " just" : "") + '"><p class="bb-name">' + item[1] + '</p><p class="bb-hint">' + item[2] + '</p><div class="bb-people">' + choices + "</div>" + (winner ? '<p class="bb-winner">' + esc(winner.split(" ")[0]) + " gets the point</p>" : '<p class="bb-winner wait">Tap who earns it</p>') + burst + "</section>";
+    }).join("");
+    return board + cards;
   }
 
   function officialHole(round, hole, info) {
@@ -435,7 +491,13 @@
     const people = playersOf(round);
     const band = '<p class="kicker">' + esc(round.date) + "</p><h1>" + esc(round.gameName) + "</h1>";
     let standings = "";
-    if (round.mode === "custom") {
+    if (round.mode === "challenge") {
+      const rows = people.map((name) => ({ name: name, score: bingoPoints(round, name) })).sort((a, b) => b.score - a.score);
+      const best = rows[0] ? rows[0].score : 0;
+      const winners = rows.filter((row) => row.score === best).map((row) => row.name);
+      standings = '<p class="pts">' + best + '</p><p>points · ' + esc(winners.join(" & ")) + "</p>" +
+        rows.map((row) => '<div class="player"><div class="top"><b>' + esc(row.name) + '</b><span class="pts">' + row.score + "</span></div></div>").join("");
+    } else if (round.mode === "custom") {
       const rows = people.map((name) => ({ name: name, score: totalPoints(round, name) })).sort((a, b) => b.score - a.score);
       const best = rows[0].score;
       const winners = rows.filter((row) => row.score === best).map((row) => row.name);
@@ -461,14 +523,20 @@
         standings += '<p class="tiny mt">' + note + "</p>";
       }
     }
-    return shell(band, standings + '<a class="btn" href="#/">Back to play</a>', "", round.ghostScores ? "ghost" : "");
+    return shell(band, standings + '<a class="btn" href="#/">Back to play</a>', "", round.mode === "challenge" ? "bingo" : round.ghostScores ? "ghost" : "");
   }
 
   function anyScore(round) {
-    return round.holes.some((hole) => playersOf(round).some((name) => {
-      if (round.mode === "custom") return pointsFor(round, name, hole) > 0;
-      return hole.scores[name] != null;
-    }));
+    return round.holes.some((hole) => {
+      if (round.mode === "challenge") {
+        const awards = hole.awards || {};
+        return awards.green || awards.putts || awards.furthest;
+      }
+      return playersOf(round).some((name) => {
+        if (round.mode === "custom") return pointsFor(round, name, hole) > 0;
+        return hole.scores[name] != null;
+      });
+    });
   }
 
   function finish() {
@@ -503,6 +571,17 @@
       state.setup.ghost = el.dataset.ghost === "1";
       save();
       ui.keepScroll = true;
+      render();
+    },
+    award(el) {
+      const hole = state.round.holes[state.round.hole];
+      if (!hole.awards) hole.awards = { green: null, putts: null, furthest: null };
+      const key = el.dataset.key;
+      const name = el.dataset.name;
+      hole.awards[key] = hole.awards[key] === name ? null : name;
+      if (hole.awards[key]) ui.pop = { key: key, name: name, hole: state.round.hole, at: Date.now() };
+      else ui.pop = null;
+      save();
       render();
     },
     "begin-shot"() {
@@ -586,7 +665,11 @@
     start() {
       syncName();
       if (!ui.choice) {
-        toast("Pick official rules or a custom game.");
+        toast("Pick official rules, a custom game, or a challenge.");
+        return;
+      }
+      if (state.setup.mode === "challenge" && state.setup.friends.length < 1) {
+        toast("Bingo needs at least one friend.");
         return;
       }
       if (state.setup.mode === "custom" && !state.setup.rules.length) {

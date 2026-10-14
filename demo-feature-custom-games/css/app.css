@@ -732,3 +732,144 @@ h1 {
 .ghostplay .grab { background: rgba(255, 255, 255, 0.25); }
 .ghostplay .rule { color: #f7f8ff; border-bottom-color: rgba(255, 255, 255, 0.1); font-family: "Nunito", "Segoe UI", sans-serif; }
 .ghostplay .rule.on { color: #5eead4; }
+
+.mode.on.challenge { border-color: transparent; box-shadow: inset 3px 0 0 #22a06b; background: rgba(34, 160, 107, 0.12); }
+
+.bingoplay {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #ffe9a8 0%, #e7f7ff 42%, #fff 100%);
+  color: #1d2a3a;
+  font-family: "Fredoka", "Nunito", sans-serif;
+}
+.bingoplay .band { background: transparent; color: #1d2a3a; }
+.bingoplay .clock,
+.bingoplay h1,
+.bingoplay .sub { color: #1d2a3a; font-family: "Fredoka", "Nunito", sans-serif; }
+.bingoplay h1 { font-weight: 700; }
+.bingoplay .kicker { color: #e25e00; font-family: "Fredoka", "Nunito", sans-serif; }
+.bingoplay .holes button {
+  border: 0;
+  border-radius: 999px;
+  background: white;
+  color: #5c6b7a;
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-weight: 700;
+}
+.bingoplay .holes button.on { background: #22a06b; color: white; }
+.bingoplay .holes button.done { background: #ffe08a; color: #5a3b00; }
+.bingoplay .scroll { background: transparent; }
+.bingoplay .btn {
+  border-radius: 999px;
+  background: #22a06b;
+  color: white;
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-weight: 700;
+  border: 0;
+}
+.bingoplay .btn.ghost { background: white; color: #1d2a3a; border: 2px solid #d5e2ea; }
+.bingoplay .home-ind { background: rgba(29, 42, 58, 0.28); }
+.bingoplay .toast { background: #22a06b; color: white; border-radius: 999px; font-family: "Fredoka", "Nunito", sans-serif; }
+.bb-board {
+  display: flex;
+  gap: 8px;
+  overflow: auto;
+  margin: 8px 0 12px;
+}
+.bb-board span {
+  flex: none;
+  background: white;
+  border-radius: 16px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 0 #f0d48a;
+  font-size: 13px;
+  color: #5c6b7a;
+}
+.bb-board b {
+  display: block;
+  font-size: 26px;
+  line-height: 1;
+  color: #1d2a3a;
+}
+.bb-card {
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 22px;
+  background: white;
+  box-shadow: 0 6px 0 rgba(29, 42, 58, 0.08);
+}
+.bb-card.green { box-shadow: 0 6px 0 #8ed48a; }
+.bb-card.putts { box-shadow: 0 6px 0 #8eb6f5; }
+.bb-card.furthest { box-shadow: 0 6px 0 #f0b56a; }
+.bb-name { margin: 0; font-size: 22px; font-weight: 700; }
+.bb-card.green .bb-name { color: #1f8a3b; }
+.bb-card.putts .bb-name { color: #1e6cff; }
+.bb-card.furthest .bb-name { color: #c56a00; }
+.bb-hint { margin: 2px 0 10px; color: #5c6b7a; font-size: 14px; }
+.bb-people { display: flex; flex-wrap: wrap; gap: 8px; }
+.bb-player {
+  border: 2px solid #e4ebf2;
+  background: #f7fafc;
+  color: #1d2a3a;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-weight: 700;
+}
+.bb-card.green .bb-player.on { background: #1f8a3b; border-color: #1f8a3b; color: white; }
+.bb-card.putts .bb-player.on { background: #1e6cff; border-color: #1e6cff; color: white; }
+.bb-card.furthest .bb-player.on { background: #e25e00; border-color: #e25e00; color: white; }
+.bb-winner { margin: 10px 0 0; font-weight: 700; }
+.bb-winner.wait { color: #8aa0b4; font-weight: 500; }
+.bb-card.just { animation: bbPop 0.55s cubic-bezier(0.2, 1.5, 0.4, 1); }
+.bb-card.just .bb-player.on { animation: bbWinner 0.6s ease; }
+.bb-burst {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.bb-burst span {
+  position: absolute;
+  left: -16px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #e25e00;
+  animation: bbFloat 0.9s ease forwards;
+}
+.bb-burst i {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: bbConfetti 0.8s ease forwards;
+}
+.bb-burst i:nth-child(2) { background: #1f8a3b; --x: -36px; --y: -28px; }
+.bb-burst i:nth-child(3) { background: #1e6cff; --x: 28px; --y: -32px; }
+.bb-burst i:nth-child(4) { background: #e25e00; --x: -18px; --y: -46px; }
+.bb-burst i:nth-child(5) { background: #ffe08a; --x: 40px; --y: -18px; }
+.bb-burst i:nth-child(6) { background: #ff7a9a; --x: 8px; --y: -40px; }
+@keyframes bbPop {
+  0% { transform: scale(0.92); }
+  55% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+@keyframes bbWinner {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes bbFloat {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-42px) scale(1.3); }
+}
+@keyframes bbConfetti {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.4); }
+}
